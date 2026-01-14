@@ -1,0 +1,49 @@
+steps:
+  - name: maven:3.9.9-eclipse-temurin-21
+    entrypoint: mvn
+    args: ['package']
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - '--no-cache'
+      - '-t'
+      - '$_GCR_HOSTNAME/$PROJECT_ID/$_REPOSITORY_NAME/$_SERVICE_NAME:${SHORT_SHA}'
+      - .
+      - '-f'
+      - Dockerfile
+    id: Build
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - '$_GCR_HOSTNAME/$PROJECT_ID/$_REPOSITORY_NAME/$_SERVICE_NAME:${SHORT_SHA}'
+    id: Push
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: gcloud
+    args:
+      - 'compute'
+      - 'instances'
+      - 'update-container'
+      - 'instance-20241122-114544'
+      - '--zone=us-central1-a'
+      - '--container-image=$_GCR_HOSTNAME/$PROJECT_ID/$_REPOSITORY_NAME/$_SERVICE_NAME:${SHORT_SHA}'
+    id: Update
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: gcloud
+    args:
+      - 'compute'
+      - 'instances'
+      - 'reset'
+      - 'instance-20241122-114544'
+      - '--zone=us-central1-a'
+    id: Reset
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+substitutions:
+  _REPOSITORY_NAME: maze
+  _SERVICE_NAME: mazev-server
+  _GCR_HOSTNAME: us-central1-docker.pkg.dev
+  _VERSION: latest
+tags:
+  - mazev-server

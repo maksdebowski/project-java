@@ -1,0 +1,14 @@
+{
+  "known": [
+    {
+      "authorize": {
+        "type": "A",
+        "key": "1234"
+      },
+      "player": {
+        "type": "P",
+        "name": "Player0"
+      }
+    }
+  ]
+}

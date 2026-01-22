@@ -7,10 +7,8 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="mazev-client" />
+        <module name="mazev-server" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="mazev-server" target="21" />
-    </bytecodeTargetLevel>
   </component>
 </project>

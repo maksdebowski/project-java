@@ -93,5 +93,19 @@ public final class DrunkenCave implements Cave {
     public int columns() {
         return this.columns;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(rows * (columns + 1));
+        sb.append('\n');
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < columns; c++) {
+                sb.append(rock(r, c) ? "#" : ".");
+            }
+            sb.append('\n');
+        }
+
+        return sb.toString();
+    }
 }
 

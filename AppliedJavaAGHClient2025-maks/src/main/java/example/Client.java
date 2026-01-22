@@ -36,7 +36,7 @@ public class Client {
             logger.info("Connected to server at {}:{}", HOST, PORT);
 
             {
-                final var json = objectMapper.writeValueAsString(new Request.Authorize("1234"));
+                final var json = objectMapper.writeValueAsString(new Request.Authorize("Haslo_Maksa"));
                 writer.write(json);
                 writer.newLine();
                 writer.flush();
@@ -48,9 +48,13 @@ public class Client {
             Collection<Response.StateLocations.ItemLocation> itemLocations;
             Collection<Response.StateLocations.PlayerLocation> playerLocations;
 
+            Location myLastLocation = null;
+
             Deque<Location> moves = new LinkedList<>();
+            int i = 0;
 
             while (!Thread.currentThread().isInterrupted()) {
+                System.in.read();
                 final var line = reader.readLine();
                 if (line == null) {
                     break;
@@ -72,11 +76,23 @@ public class Client {
                         logger.info("cave: {}", cave);
                     }
                     case Response.StateLocations stateLocations -> {
+
                         itemLocations = stateLocations.itemLocations();
                         playerLocations = stateLocations.playerLocations();
+                        Location responseLocation = playerLocations.stream().findAny().get().location();
+                        if (myLastLocation != null){
+                            logger.info(responseLocation.toString() + myLastLocation.toString());
+                            if (myLastLocation.equals(responseLocation)){
+
+                                i++;
+                                i = i%4;
+                            }
+                        }
+                        myLastLocation = responseLocation;
+                        logger.info(myLastLocation.toString());
                         logger.info("itemLocations: {}", itemLocations);
                         logger.info("playerLocations: {}", playerLocations);
-                        Request cmd = new Request.Command(Direction.Up);
+                        Request cmd = new Request.Command(Direction.values()[i]);
 
                         if (cmd!=null) {
                             final var cmdJson = objectMapper.writeValueAsString(cmd);

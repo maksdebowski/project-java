@@ -3,11 +3,41 @@
     {
       "authorize": {
         "type": "A",
-        "key": "1234"
+        "key": "Haslo_Julki"
       },
       "player": {
         "type": "P",
-        "name": "Player0"
+        "name": "Julka"
+      }
+    },
+    {
+      "authorize": {
+        "type": "A",
+        "key": "Haslo_Leny"
+      },
+      "player": {
+        "type": "P",
+        "name": "Lena"
+      }
+    },
+    {
+      "authorize": {
+        "type": "A",
+        "key": "Haslo_Lukasza"
+      },
+      "player": {
+        "type": "P",
+        "name": "Łukasz"
+      }
+    },
+    {
+      "authorize": {
+        "type": "A",
+        "key": "Haslo_Maksa"
+      },
+      "player": {
+        "type": "P",
+        "name": "Maks"
       }
     }
   ]

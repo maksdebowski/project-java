@@ -46,13 +46,13 @@ public class Game {
     }
 
     public void render() {
-        final var tbl = new char[cave.columns() * cave.rows()];
+        final var tbl = new String[cave.columns() * cave.rows()];
         for (int row = 0; row < cave.rows(); row++) {
             for (int column = 0; column < cave.columns(); column++) {
                 if (cave.rock(row, column)) {
-                    tbl[row * cave.columns() + column] = 'X';
+                    tbl[row * cave.columns() + column] = "\uD83E\uDEA8";
                 } else {
-                    tbl[row * cave.columns() + column] = ' ';
+                    tbl[row * cave.columns() + column] = " ";
                 }
             }
         }
@@ -60,16 +60,16 @@ public class Game {
         for (final var entry : playerLocation.entrySet()) {
             final var location = entry.getValue();
             tbl[location.row() * cave.columns() + location.column()] = switch (entry.getKey()) {
-                case Player.HumanPlayer ignored -> 'P';
-                case Player.Dragon ignored -> 'D';
+                case Player.HumanPlayer ignored -> ignored.name().substring(0,1);
+                case Player.Dragon ignored -> "\uD83D\uDC09";
             };
         }
 
         for (final var entry : itemLocation.entrySet()) {
             final var location = entry.getValue();
             tbl[location.row() * cave.columns() + location.column()] = switch (entry.getKey()) {
-                case Item.Gold ignored -> 'G';
-                case Item.Health ignored -> 'H';
+                case Item.Gold ignored -> "\uD83D\uDCB0";
+                case Item.Health ignored -> "\uD83D\uDC8A";
             };
         }
 
@@ -80,6 +80,50 @@ public class Game {
             System.out.println();
         }
     }
+    public String renderString() {
+        StringBuilder sb = new StringBuilder();
+        // Dodajemy prosty styl dla komórki: stała szerokość, wysokość i centrowanie
+        String cellTemplate = "<span style='display:inline-block; width:25px; height:25px; text-align:center; vertical-align:middle;'>%s</span>";
+
+        for (int row = 0; row < cave.rows(); row++) {
+            for (int column = 0; column < cave.columns(); column++) {
+                final int r = row;
+                final int c = column;
+
+                // 1. Sprawdzanie graczy
+                String symbol = playerLocation.entrySet().stream()
+                        .filter(e -> e.getValue().row() == r && e.getValue().column() == c)
+                        .findFirst()
+                        .map(e -> switch (e.getKey()) {
+                            case Player.HumanPlayer p -> p.name().substring(0, 1).toUpperCase();
+                            case Player.Dragon d -> "\uD83D\uDC09"; // 🐉
+                        })
+                        .orElse(null);
+
+                // 2. Jeśli nie ma gracza, sprawdź przedmioty
+                if (symbol == null) {
+                    symbol = itemLocation.entrySet().stream()
+                            .filter(e -> e.getValue().row() == r && e.getValue().column() == c)
+                            .findFirst()
+                            .map(e -> switch (e.getKey()) {
+                                case Item.Gold g -> "\uD83D\uDCB0";   // 💰
+                                case Item.Health h -> "\uD83D\uDC8A"; // 💊
+                            })
+                            .orElse(null);
+                }
+
+                // 3. Jeśli puste, sprawdź skałę
+                if (symbol == null) {
+                    symbol = cave.rock(row, column) ? "\uD83E\uDEA8" : "&nbsp;"; // 🪨 lub twarda spacja HTML
+                }
+
+                sb.append(String.format(cellTemplate, symbol));
+            }
+            sb.append("<br>"); // Nowa linia HTML
+        }
+        return sb.toString();
+    }
+
 
     public void add(Item entity, Supplier<Location> generateLocation) {
         for (; ; ) {
@@ -134,9 +178,21 @@ public class Game {
     }
 
     public void step(Collection<Action> commands) {
-        // make sure there is only one command per player
-        final var filtered = commands.stream().collect(Collectors.groupingBy(Action::player)).entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().getFirst()));
+        if (commands == null) {
+            // Logowanie błędu: "Received null command collection"
+            return;
+        }
 
+        // Filtrowanie: usuwamy null-e, sprawdzamy poprawność Action i gracza
+        final var filtered = commands.stream()
+                .filter(Objects::nonNull)
+                .filter(a -> a.player() != null && a.direction() != null)
+                .collect(Collectors.groupingBy(Action::player))
+                .entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> entry.getValue().getFirst()
+                ));
         // apply commands to player locations
         final var moved = playerLocation.entrySet().stream()
                 .map(entry -> {
@@ -146,6 +202,13 @@ public class Game {
                     }
 
                     final var next = move(entry.getValue(), action);
+
+                    if (next.row() < 0 || next.row() >= cave.rows() ||
+                            next.column() < 0 || next.column() >= cave.columns()) {
+                        return entry;
+                    }
+
+
                     if (cave.rock(next.row(), next.column())) {
                         return entry;
                     }
@@ -173,13 +236,13 @@ public class Game {
     }
 
     private void generateHealth() {
-        for (int i = 0; i < NUM_GOLD; i++) {
+        for (int i = 0; i < NUM_HEALTH; i++) {
             add(new Item.Health(i, ThreadLocalRandom.current().nextInt(100)), this::randomLocation);
         }
     }
 
     private void generateGold() {
-        for (int i = 0; i < NUM_HEALTH; i++) {
+        for (int i = 0; i < NUM_GOLD; i++) {
             add(new Item.Gold(i, ThreadLocalRandom.current().nextInt(100)), this::randomLocation);
         }
     }

@@ -24,4 +24,5 @@ public class MoveStrategy {
 
         return possible.get(random.nextInt(possible.size()));
     }
+
 }

@@ -47,6 +47,7 @@ public class ConsoleRenderer {
             System.out.println();
         }
 
+
         System.out.println("Health: " + state.health + " | Gold: " + state.gold);
         System.out.println("=================================");
     }

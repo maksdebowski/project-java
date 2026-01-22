@@ -11,6 +11,7 @@ public class GameState {
     public int health;
     public int gold;
 
+
     public void update(Response.StateLocations state) {
         this.playerLocations = state.playerLocations();
         this.itemLocations = state.itemLocations();

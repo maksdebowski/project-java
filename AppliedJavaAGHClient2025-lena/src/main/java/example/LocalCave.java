@@ -22,4 +22,5 @@ public class LocalCave {
     public int columns() {
         return columns;
     }
+
 }

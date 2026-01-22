@@ -93,6 +93,7 @@ public class Client {
                         Request cmd = new Request.Command(dir);
 
 
+
                         if (cmd!=null) {
                             final var cmdJson = objectMapper.writeValueAsString(cmd);
                             writer.write(cmdJson);

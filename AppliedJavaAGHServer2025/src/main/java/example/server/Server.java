@@ -180,7 +180,14 @@ public class Server {
             }
 
             final Player.HumanPlayer player;
-            final var request = objectMapper.readValue(line, Request.class);
+            Request request;
+
+            try {
+                request = objectMapper.readValue(line, Request.class);
+            } catch (Exception e) {
+                logger.warn("Invalid authorization JSON: {}", line);
+                return; // kończymy to połączenie, ale serwer żyje
+            }
             if (Objects.requireNonNull(request) instanceof Request.Authorize authorize) {
                 player = known.stream()
                         .filter(configuration -> configuration.authorize().equals(authorize))

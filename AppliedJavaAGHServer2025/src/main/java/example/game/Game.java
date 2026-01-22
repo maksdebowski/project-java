@@ -224,28 +224,39 @@ public class Game {
         moved.forEach((location, entries) -> entries.forEach(entry -> playerLocation.put(entry.getKey(), entry.getValue())));
 
         // generate gold if none
-        if (itemLocation.keySet().stream().noneMatch(item -> item instanceof Item.Gold)) {
-            generateGold();
+        long goldCount = itemLocation.keySet().stream()
+                .filter(item -> item instanceof Item.Gold)
+                .count();
+
+        if (goldCount < NUM_GOLD) {
+            generateGold(NUM_GOLD - (int) goldCount);
         }
 
-        // generate health if none
-        if (itemLocation.keySet().stream().noneMatch(item -> item instanceof Item.Health)) {
-            generateHealth();
+
+        long healthCount = itemLocation.keySet().stream()
+                .filter(item -> item instanceof Item.Health)
+                .count();
+
+        if (healthCount < NUM_HEALTH) {
+            generateHealth(NUM_HEALTH - (int) healthCount);
         }
+
 
     }
 
-    private void generateHealth() {
-        for (int i = 0; i < NUM_HEALTH; i++) {
+    private void generateHealth(int amount) {
+        for (int i = 0; i < amount; i++) {
             add(new Item.Health(i, ThreadLocalRandom.current().nextInt(100)), this::randomLocation);
         }
     }
 
-    private void generateGold() {
-        for (int i = 0; i < NUM_GOLD; i++) {
+
+    private void generateGold(int amount) {
+        for (int i = 0; i < amount; i++) {
             add(new Item.Gold(i, ThreadLocalRandom.current().nextInt(100)), this::randomLocation);
         }
     }
+
 
     private void fight(Location location, List<Player> players) {
         if (players.isEmpty()) {

@@ -11,6 +11,7 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.locks.*;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.net.httpserver.HttpServer;
@@ -29,7 +30,7 @@ public class Server {
     private static final Logger logger = LoggerFactory.getLogger(Server.class);
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    private final AtomicReference<State> state = new AtomicReference<>(new State(List.of(), List.of(), Map.of(), Map.of()));
+    private final AtomicReference<State> state = new AtomicReference<>(new State(List.of(), List.of(), Map.of(), Map.of(), Map.of()));
     private final BlockingQueue<Action> actionsQueue = new LinkedBlockingQueue<>();
     private final Lock stateLock = new ReentrantLock();
     private final Condition stateUpdated = stateLock.newCondition();
@@ -116,14 +117,28 @@ public class Server {
                 %s
             </div>
             <p>Players: %d | Items: %d</p>
-            <p>Healths: %s</p>
+            <p>Score: %s</p>
         </body>
         </html>
         """.formatted(
                         mapContent,
                         state.get().playerLocations().size(),
                         state.get().itemLocations().size(),
-                        state.get().playerHealths.toString()
+                        state.get().playerHealths().keySet().stream()
+                                .filter(player -> player instanceof Player.HumanPlayer) // Liczymy punkty tylko dla ludzi
+                                .map(player -> {
+                                    Player.HumanPlayer human = (Player.HumanPlayer) player;
+
+                                    int gold = state.get().playerGolds().getOrDefault(player, 0);
+                                    int hp = state.get().playerHealths().getOrDefault(player, 0);
+                                    int moves = state.get().playerMoves().getOrDefault(player, 0);
+
+                                    // Formuła: score = gold + hp - ruchy
+                                    int score = gold + hp - moves;
+
+                                    return "%s: %d".formatted(human.name(), score);
+                                })
+                                .collect(Collectors.joining(", "))
                 );
                 byte[] responseBytes = html.getBytes(java.nio.charset.StandardCharsets.UTF_8);
 
@@ -190,9 +205,12 @@ public class Server {
             }
             if (Objects.requireNonNull(request) instanceof Request.Authorize authorize) {
                 player = known.stream()
-                        .filter(configuration -> configuration.authorize().equals(authorize))
-                        .findAny()
+                        .filter(config -> config.authorize().equals(authorize))
                         .map(PlayerConfiguration::player)
+                        // Only keep it if it's actually a HumanPlayer
+                        .filter(p -> p instanceof Player.HumanPlayer)
+                        .map(p -> (Player.HumanPlayer) p)
+                        .findAny()
                         .orElse(null);
                 if (player == null) {
                     final var json = objectMapper.writeValueAsString(new Response.Unauthorized());
@@ -248,7 +266,7 @@ public class Server {
                 // Update the state
                 stateLock.lock();
                 try {
-                    state.set(new State(itemLocations, playerLocations, game.playerHealth(), game.playerGold()));
+                    state.set(new State(itemLocations, playerLocations, game.playerHealth(), game.playerGold(), game.playerMoves()));
                     // Notify client state threads
                     stateUpdated.signalAll();
                 } finally {
@@ -295,6 +313,7 @@ public class Server {
     private record State(List<Response.StateLocations.ItemLocation> itemLocations,
                          List<Response.StateLocations.PlayerLocation> playerLocations,
                          Map<Player, Integer> playerHealths,
-                         Map<Player, Integer> playerGolds) {
+                         Map<Player, Integer> playerGolds,
+                         Map<Player, Integer> playerMoves) {
     }
 }

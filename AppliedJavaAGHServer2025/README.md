@@ -48,7 +48,7 @@ Waszym zadaniem jest **rozbudowa serwera i klientów** gry labiryntowej.
 
 ---
 
-## Poziom 2 — poprawki i bezpieczeństwo działania serwera (grupa)
+## Poziom 2 — poprawki i bezpieczeństwo działania serwera (grupa) <code style="color: green">DONE</code>
 
 6. **Naprawa ruchu poza mapę (bug krytyczny)**
 
@@ -72,19 +72,18 @@ Waszym zadaniem jest **rozbudowa serwera i klientów** gry labiryntowej.
 
 ## Poziom 3 — mechanika gry (modyfikacje w `Game`)
 
-9. **Koszt ruchu w HP**
-
+9. **Koszt ruchu w HP** <code style="color: green">DONE</code>
     * Dodaj koszt za ruch, np. `-1 HP` za każdy zaakceptowany krok.
     * Dodatkowo: wprowadź “trudny teren” (nowy typ pola) *albo* zasadę “uderzenia w ścianę”:
 
         * np. jeśli gracz próbuje wejść w skałę / poza mapę → ruch odrzucony i `-5 HP`.
 
-10. **Zasady walki — zmiana strategii**
+10. **Zasady walki — zmiana strategii** <code style="color: green">DONE</code>
 
 * Aktualnie: gdy >1 gracz na polu, wszyscy tracą część HP.
 * Wymaganie: zmienić strategię walki (i krótko opisać regułę w README).
 
-11. **Zbieranie itemów — dzielenie proporcjonalne do HP**
+11. **Zbieranie itemów — dzielenie proporcjonalne do HP**   <code style="color: green">DONE</code>
 
 * Aktualnie: item dostaje tylko najsilniejszy gracz na polu.
 * Nowa reguła: wartość itemu dzielona proporcjonalnie do HP graczy na polu, np.:
@@ -93,16 +92,16 @@ Waszym zadaniem jest **rozbudowa serwera i klientów** gry labiryntowej.
     * resztę (z zaokrągleń) przydzielcie deterministycznie (np. najwyższe HP albo kolejność po nazwie).
 * Dotyczy zarówno Gold jak i Health.
 
-12. **Respawn itemów**
+12. **Respawn itemów**  <code style="color: green">DONE</code>
 
 * Aktualnie: gdy nie ma ani jednego Gold/Health → generuj.
 * Wymaganie: respawn wg stałej gęstości (np. “utrzymuj min. X Gold i Y Health”) **albo** respawn co N ticków.
 
-13. **Limit HP**
+13. **Limit HP**  <code style="color: green">DONE</code>
 
 * Wprowadź `maxHealth` (np. 100). Leczenie nie może przekraczać limitu.
 
-14. **Wynik**
+14. **Wynik** <code style="color: green">DONE</code>
 
 * Zdefiniuj wynik, np.:
 

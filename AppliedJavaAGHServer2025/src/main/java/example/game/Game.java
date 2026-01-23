@@ -15,6 +15,8 @@ public class Game {
     private final Map<Player, Location> playerLocation;
     private final Map<Player, Integer> playerHealth;
     private final Map<Player, Integer> playerGold;
+    private final Map<Player, Integer> playerMoves;
+
     private final Cave cave;
 
     public Map<Player, Integer> playerHealth() {
@@ -24,6 +26,8 @@ public class Game {
     public Map<Player, Integer> playerGold() {
         return Collections.unmodifiableMap(playerGold);
     }
+
+    public Map<Player, Integer> playerMoves() { return Collections.unmodifiableMap(playerMoves);}
 
     public Map<Player, Location> playerLocation() {
         return Collections.unmodifiableMap(playerLocation);
@@ -43,6 +47,7 @@ public class Game {
         this.itemLocation = new HashMap<>();
         this.playerHealth = new HashMap<>();
         this.playerGold = new HashMap<>();
+        this.playerMoves = new HashMap<>();
     }
 
     public void render() {
@@ -155,6 +160,8 @@ public class Game {
                 continue;
             }
 
+            playerMoves.put(entity, 0);
+
             playerLocation.put(entity, location);
             if (entity instanceof Player.HumanPlayer player) {
                 playerHealth.put(player, 100);
@@ -201,15 +208,27 @@ public class Game {
                         return entry;
                     }
 
-                    final var next = move(entry.getValue(), action);
 
-                    if (next.row() < 0 || next.row() >= cave.rows() ||
-                            next.column() < 0 || next.column() >= cave.columns()) {
-                        return entry;
+                    if (entry.getKey() instanceof Player.HumanPlayer human) {
+                        playerMoves.computeIfPresent(entry.getKey(), (k, v) -> v + 1);
+                        playerHealth.computeIfPresent(human, (player, hp) -> Math.max(0, hp - 1));
                     }
 
+                    final var next = move(entry.getValue(), action);
 
-                    if (cave.rock(next.row(), next.column())) {
+                    boolean hitRock = false;
+                    if (next.row() < 0 || next.row() >= cave.rows() ||
+                            next.column() < 0 || next.column() >= cave.columns()) {
+                        hitRock = true;
+                    } else if (cave.rock(next.row(), next.column())) {
+                        hitRock = true;
+                    }
+
+                    if (hitRock) {
+                        // Jeśli to człowiek, odejmij 5 HP
+                        if (entry.getKey() instanceof Player.HumanPlayer human) {
+                            playerHealth.computeIfPresent(human, (key, currentHp) -> Math.max(0, currentHp - 5));
+                        }
                         return entry;
                     }
 
@@ -259,39 +278,92 @@ public class Game {
 
 
     private void fight(Location location, List<Player> players) {
-        if (players.isEmpty()) {
-            return;
+        if (players.isEmpty()) return;
+
+        List<Player.HumanPlayer> humans = players.stream()
+                .filter(p -> p instanceof Player.HumanPlayer)
+                .map(p -> (Player.HumanPlayer) p)
+                .toList();
+
+        List<Player.Dragon> dragons = players.stream()
+                .filter(p -> p instanceof Player.Dragon)
+                .map(p -> (Player.Dragon) p)
+                .toList();
+
+        // SMOCZY ODDECH
+        for (Player.Dragon dragon : dragons) {
+            int damage = switch (dragon.size()) {
+                case Small -> 5;
+                case Medium -> 15;
+                case Large -> 40;
+            };
+            humans.forEach(h -> playerHealth.computeIfPresent(h, (k, hp) -> Math.max(0, hp - damage)));
         }
 
-        // "fight" - health of all players is reduced by half of health of the weakest one
-        if (players.size() > 1) {
-            final var optionalMinimum = players.stream().min((o1, o2) -> Integer.compare(playerHealth.get(o1), playerHealth.get(o2))).map(playerHealth::get);
-
-            optionalMinimum.ifPresent(minimum -> players.forEach(player -> playerHealth.compute(player, (ignored, health) -> (2 * health - minimum + 1) / 2)));
+        // AWANTURA
+        if (humans.size() > 1) {
+            int pvpDamage = (humans.size() - 1) * 10;
+            humans.forEach(h -> playerHealth.computeIfPresent(h, (k, hp) -> Math.max(0, hp - pvpDamage)));
         }
 
-        final var optionalMaximum = players.stream().max((o1, o2) -> Integer.compare(playerHealth.get(o1), playerHealth.get(o2)));
+        // --- NOWA LOGIKA LOOTU ---
 
-        optionalMaximum.ifPresent(maximum -> {
-            final var filtered = itemLocation.entrySet().stream().filter(entry -> entry.getValue().equals(location)).toList();
+        // 1. Filtrujemy tylko żywych graczy i sortujemy ich deterministycznie
+        // Sortowanie: 1. Najwyższe HP (malejąco), 2. Imię (rosnąco)
+        List<Player.HumanPlayer> aliveHumans = humans.stream()
+                .filter(h -> playerHealth.getOrDefault(h, 0) > 0)
+                .sorted(Comparator.comparingInt((Player.HumanPlayer h) -> playerHealth.getOrDefault(h, 0)).reversed()
+                        .thenComparing(Player.HumanPlayer::name))
+                .toList();
 
-            // do something with non player entities, i.e. gold?
-            itemLocation.entrySet().stream()
+        if (!aliveHumans.isEmpty()) {
+            // Obliczamy sumaryczne HP wszystkich żywych na polu
+            int totalHp = aliveHumans.stream()
+                    .mapToInt(h -> playerHealth.getOrDefault(h, 0))
+                    .sum();
+
+            // Znajdujemy przedmioty na tej pozycji
+            var itemsAtLocation = itemLocation.entrySet().stream()
                     .filter(entry -> entry.getValue().equals(location))
-                    .forEach(entry -> {
-                        switch (entry.getKey()) {
-                            case Item.Gold(int id, int value) -> {
-                                playerGold.computeIfPresent(maximum, (ignored, current) -> current + value);
-                            }
+                    .map(Map.Entry::getKey)
+                    .toList();
 
-                            case Item.Health(int id, int value) -> {
-                                playerHealth.computeIfPresent(maximum, (ignored, current) -> current + value);
-                            }
-                        }
-                    });
+            for (Item item : itemsAtLocation) {
+                int itemValue = switch (item) {
+                    case Item.Gold g -> g.value();
+                    case Item.Health h -> h.value();
+                };
 
-            filtered.forEach(entry -> itemLocation.remove(entry.getKey()));
-        });
+                int distributedTotal = 0;
+                Map<Player.HumanPlayer, Integer> shares = new HashMap<>();
+
+                // Podział proporcjonalny (floor)
+                for (var h : aliveHumans) {
+                    int hp = playerHealth.getOrDefault(h, 0);
+                    int share = (int) Math.floor((double) itemValue * hp / totalHp);
+                    shares.put(h, share);
+                    distributedTotal += share;
+                }
+
+                // 3. Rozdzielenie reszty deterministycznie (dla pierwszego na liście po sortowaniu)
+                int remainder = itemValue - distributedTotal;
+                if (remainder > 0) {
+                    Player.HumanPlayer luckyWinner = aliveHumans.get(0);
+                    shares.put(luckyWinner, shares.get(luckyWinner) + remainder);
+                }
+
+                // 4. Aktualizacja map zdrowia i złota
+                shares.forEach((h, amount) -> {
+                    if (item instanceof Item.Gold) {
+                        playerGold.computeIfPresent(h, (k, v) -> Math.min(v + amount, 100));
+                    } else if (item instanceof Item.Health) {
+                        playerHealth.computeIfPresent(h, (k, v) -> Math.min(v + amount, 100));
+                    }
+                });
+
+                itemLocation.remove(item);
+            }
+        }
     }
 
     private Location move(Location value, Action action) {

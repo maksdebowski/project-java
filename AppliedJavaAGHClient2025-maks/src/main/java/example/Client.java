@@ -54,7 +54,7 @@ public class Client {
             int i = 0;
 
             while (!Thread.currentThread().isInterrupted()) {
-                System.in.read();
+                //System.in.read();
                 final var line = reader.readLine();
                 if (line == null) {
                     break;
@@ -79,13 +79,17 @@ public class Client {
 
                         itemLocations = stateLocations.itemLocations();
                         playerLocations = stateLocations.playerLocations();
-                        Location responseLocation = playerLocations.stream().findAny().get().location();
+                        Location responseLocation = playerLocations.stream()
+                                .filter(pl -> pl.entity() instanceof Player.HumanPlayer(
+                                        String name
+                                ) && "Maks".equals(name))
+                                .map(Response.StateLocations.PlayerLocation::location)
+                                .findFirst()
+                                .orElse(null);
                         if (myLastLocation != null){
                             logger.info(responseLocation.toString() + myLastLocation.toString());
                             if (myLastLocation.equals(responseLocation)){
-
-                                i++;
-                                i = i%4;
+                                i = new Random().nextInt(4);
                             }
                         }
                         myLastLocation = responseLocation;

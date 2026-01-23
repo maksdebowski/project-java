@@ -39,6 +39,16 @@
         "type": "P",
         "name": "Maks"
       }
+    },
+    {
+      "authorize": {
+        "type": "A",
+        "key": "SmOk"
+      },
+      "player": {
+        "type": "D",
+        "size": "Large"
+      }
     }
   ]
 }

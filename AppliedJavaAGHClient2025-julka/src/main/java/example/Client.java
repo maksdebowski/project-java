@@ -36,7 +36,8 @@ public class Client {
             logger.info("Connected to server at {}:{}", HOST, PORT);
 
             {
-                final var json = objectMapper.writeValueAsString(new Request.Authorize("1234"));
+                String key = ClientConfig.getKey();
+                final var json = objectMapper.writeValueAsString(new Request.Authorize(key));
                 writer.write(json);
                 writer.newLine();
                 writer.flush();
@@ -45,8 +46,10 @@ public class Client {
 
             Cave cave = null;
             Player player = null;
-            Collection<Response.StateLocations.ItemLocation> itemLocations;
-            Collection<Response.StateLocations.PlayerLocation> playerLocations;
+            LocalCave localCave = null;
+            GameState gameState = new GameState();
+            Collection<Response.StateLocations.ItemLocation> itemLocations = null;
+            Collection<Response.StateLocations.PlayerLocation> playerLocations = null;
 
             Deque<Location> moves = new LinkedList<>();
 
@@ -68,15 +71,34 @@ public class Client {
                         return;
                     }
                     case Response.StateCave stateCave -> {
-                        cave = stateCave.cave();
-                        logger.info("cave: {}", cave);
+                        var serverCave = stateCave.cave();
+
+                        int rows = serverCave.rows();
+                        int cols = serverCave.columns();
+
+                        boolean[][] rocks = new boolean[rows][cols];
+                        for (int r = 0; r < rows; r++) {
+                            for (int c = 0; c < cols; c++) {
+                                rocks[r][c] = serverCave.rock(r, c);
+                            }
+                        }
+
+                        localCave = new LocalCave(rows, cols, rocks);
+                        logger.info("Local cave built: {}x{}", rows, cols);
                     }
                     case Response.StateLocations stateLocations -> {
-                        itemLocations = stateLocations.itemLocations();
-                        playerLocations = stateLocations.playerLocations();
+                        gameState.update(stateLocations);
                         logger.info("itemLocations: {}", itemLocations);
                         logger.info("playerLocations: {}", playerLocations);
-                        Request cmd = new Request.Command(Direction.Up);
+                        logger.info(
+                                "State updated: players={}, items={}, health={}, gold={}",
+                                gameState.playerLocations.size(),
+                                gameState.itemLocations.size(),
+                                gameState.health,
+                                gameState.gold
+                        );
+                        Direction dir = Direction.values()[new Random().nextInt(Direction.values().length)];
+                        Request cmd = new Request.Command(dir);
 
                         if (cmd!=null) {
                             final var cmdJson = objectMapper.writeValueAsString(cmd);
@@ -84,6 +106,7 @@ public class Client {
                             writer.newLine();
                             writer.flush();
                             logger.info("Sent command: {}", cmd);
+                            ConsoleRenderer.render(localCave, gameState);
                         }
                     }
                 }

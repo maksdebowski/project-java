@@ -36,8 +36,7 @@ public class Client {
             logger.info("Connected to server at {}:{}", HOST, PORT);
 
             {
-                String key = ClientConfig.getKey();
-                final var json = objectMapper.writeValueAsString(new Request.Authorize(key));
+                final var json = objectMapper.writeValueAsString(new Request.Authorize("Haslo_Julki"));
                 writer.write(json);
                 writer.newLine();
                 writer.flush();

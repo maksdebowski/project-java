@@ -4,4 +4,10 @@ public record Location(int row, int column) {
     public double distanceFromOrigin() {
         return Math.abs(row) + Math.abs(column);
     }
+
+    @Override
+    public boolean equals(Location loc) {
+        if(row == loc.row && column == loc.column) { return true; };
+  ;      return false;
+    }
 }

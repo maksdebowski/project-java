@@ -16,6 +16,6 @@ public class Main {
         final var game = new Game(cave);
         //final var server = new Server(game, "{\"known\":[{\"authorize\":{\"type\":\"A\",\"key\":\"1234\"},\"player\":{\"type\":\"P\",\"name\":\"Player0\"}}]}");
         final var server = new Server(game, Path.of("config/configuration.json"));
-        server.start(8080);
+        server.start(8080, 8081);
     }
 }

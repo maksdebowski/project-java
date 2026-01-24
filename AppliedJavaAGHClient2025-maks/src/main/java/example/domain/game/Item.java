@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = Item.Gold.class, name = "G"),
         @JsonSubTypes.Type(value = Item.Health.class, name = "H"),
+        @JsonSubTypes.Type(value = Item.Exit.class, name = "E"),
 })
 public sealed interface Item {
     record Gold(int id, int value) implements Item {
@@ -18,4 +19,6 @@ public sealed interface Item {
 
     record Health(int id, int value) implements Item {
     }
+
+    record Exit(int id) implements Item{}
 }

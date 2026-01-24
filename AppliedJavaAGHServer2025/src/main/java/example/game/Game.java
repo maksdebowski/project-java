@@ -2,6 +2,11 @@ package example.game;
 
 import example.domain.game.*;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Supplier;
@@ -16,6 +21,8 @@ public class Game {
     private final Map<Player, Integer> playerHealth;
     private final Map<Player, Integer> playerGold;
     private final Map<Player, Integer> playerMoves;
+    private final Set<Player.HumanPlayer> winnersWhoReachedExit;
+    private volatile boolean gameEnded = false;
 
     private final Cave cave;
 
@@ -48,6 +55,7 @@ public class Game {
         this.playerHealth = new HashMap<>();
         this.playerGold = new HashMap<>();
         this.playerMoves = new HashMap<>();
+        this.winnersWhoReachedExit = new HashSet<>();
     }
 
     public void render() {
@@ -75,6 +83,7 @@ public class Game {
             tbl[location.row() * cave.columns() + location.column()] = switch (entry.getKey()) {
                 case Item.Gold ignored -> "\uD83D\uDCB0";
                 case Item.Health ignored -> "\uD83D\uDC8A";
+                case Item.Exit ignored -> "\uD83D\uDEAA";
             };
         }
 
@@ -113,6 +122,7 @@ public class Game {
                             .map(e -> switch (e.getKey()) {
                                 case Item.Gold g -> "\uD83D\uDCB0";   // 💰
                                 case Item.Health h -> "\uD83D\uDC8A"; // 💊
+                                case Item.Exit ex -> "\uD83D\uDEAA";  // 🚪
                             })
                             .orElse(null);
                 }
@@ -329,9 +339,26 @@ public class Game {
                     .toList();
 
             for (Item item : itemsAtLocation) {
+                // Handle Exit - player finishes the game
+                if (item instanceof Item.Exit) {
+                    // Win logic: add 100 to health for all alive humans at exit
+                    for (var human : aliveHumans) {
+                        playerHealth.computeIfPresent(human, (k, v) -> Math.min(v + 100, 200)); // Allow exceeding normal max for winners
+                        winnersWhoReachedExit.add(human);
+                    }
+                    
+                    // Save results and mark game as ended
+                    if (!winnersWhoReachedExit.isEmpty()) {
+                        saveGameResults();
+                        gameEnded = true;
+                    }
+                    continue;
+                }
+                
                 int itemValue = switch (item) {
                     case Item.Gold g -> g.value();
                     case Item.Health h -> h.value();
+                    case Item.Exit e -> 0;
                 };
 
                 int distributedTotal = 0;
@@ -381,5 +408,160 @@ public class Game {
 
     public Integer gold(Player.HumanPlayer player) {
         return playerGold.get(player);
+    }
+    
+    public void generateExit() {
+        add(new Item.Exit(0), this::randomLocation);
+    }
+    
+    public Location getExitLocation() {
+        return itemLocation.entrySet().stream()
+                .filter(entry -> entry.getKey() instanceof Item.Exit)
+                .map(Map.Entry::getValue)
+                .findFirst()
+                .orElse(null);
+    }
+    
+    public Map<Location, Integer> calculateDistancesFromExit() {
+        Location exitLocation = getExitLocation();
+        if (exitLocation == null) {
+            return new HashMap<>();
+        }
+        
+        return bfsDistances(exitLocation);
+    }
+    
+    private Map<Location, Integer> bfsDistances(Location start) {
+        Map<Location, Integer> distances = new HashMap<>();
+        Queue<Location> queue = new LinkedList<>();
+        
+        queue.add(start);
+        distances.put(start, 0);
+        
+        while (!queue.isEmpty()) {
+            Location current = queue.poll();
+            int currentDistance = distances.get(current);
+            
+            for (Direction dir : Direction.values()) {
+                Location next = moveLocation(current, dir);
+                
+                // Check if valid and not visited
+                if (isValidLocation(next) && !distances.containsKey(next)) {
+                    distances.put(next, currentDistance + 1);
+                    queue.add(next);
+                }
+            }
+        }
+        
+        return distances;
+    }
+    
+    private Location moveLocation(Location location, Direction direction) {
+        return switch (direction) {
+            case Up -> new Location(location.row() - 1, location.column());
+            case Down -> new Location(location.row() + 1, location.column());
+            case Left -> new Location(location.row(), location.column() - 1);
+            case Right -> new Location(location.row(), location.column() + 1);
+        };
+    }
+    
+    private boolean isValidLocation(Location location) {
+        if (location.row() < 0 || location.row() >= cave.rows() ||
+            location.column() < 0 || location.column() >= cave.columns()) {
+            return false;
+        }
+        return !cave.rock(location.row(), location.column());
+    }
+    
+    public List<Location> getLocationsAtDistance(int distance) {
+        Map<Location, Integer> distances = calculateDistancesFromExit();
+        return distances.entrySet().stream()
+                .filter(entry -> entry.getValue() == distance)
+                .map(Map.Entry::getKey)
+                .filter(loc -> !itemLocation.containsValue(loc))
+                .filter(loc -> !playerLocation.containsValue(loc))
+                .toList();
+    }
+    
+    public Supplier<Location> fairStartLocationSupplier(int targetDistance) {
+        return () -> {
+            List<Location> candidates = getLocationsAtDistance(targetDistance);
+            if (candidates.isEmpty()) {
+                // Fallback to random if no locations at exact distance
+                return randomLocation();
+            }
+            return candidates.get(rg.nextInt(candidates.size()));
+        };
+    }
+    
+    /**
+     * Save game results to a file when a player reaches the exit
+     */
+    private void saveGameResults() {
+        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"));
+        String filename = "game_results_" + timestamp + ".txt";
+        
+        try (PrintWriter writer = new PrintWriter(new FileWriter(filename))) {
+            writer.println("=== GAME RESULTS ===");
+            writer.println("Timestamp: " + LocalDateTime.now());
+            writer.println();
+            
+            writer.println("=== WINNERS (Reached Exit) ===");
+            for (Player.HumanPlayer winner : winnersWhoReachedExit) {
+                int health = playerHealth.getOrDefault(winner, 0);
+                int gold = playerGold.getOrDefault(winner, 0);
+                int moves = playerMoves.getOrDefault(winner, 0);
+                int score = calculateScore(winner);
+                
+                writer.println("Player: " + winner.name());
+                writer.println("  Health: " + health);
+                writer.println("  Gold: " + gold);
+                writer.println("  Moves: " + moves);
+                writer.println("  Score: " + score);
+                writer.println();
+            }
+            
+            writer.println("=== ALL PLAYERS ===");
+            for (Map.Entry<Player, Location> entry : playerLocation.entrySet()) {
+                if (entry.getKey() instanceof Player.HumanPlayer human) {
+                    int health = playerHealth.getOrDefault(human, 0);
+                    int gold = playerGold.getOrDefault(human, 0);
+                    int moves = playerMoves.getOrDefault(human, 0);
+                    int score = calculateScore(human);
+                    boolean reachedExit = winnersWhoReachedExit.contains(human);
+                    
+                    writer.println("Player: " + human.name());
+                    writer.println("  Health: " + health);
+                    writer.println("  Gold: " + gold);
+                    writer.println("  Moves: " + moves);
+                    writer.println("  Score: " + score);
+                    writer.println("  Reached Exit: " + reachedExit);
+                    writer.println();
+                }
+            }
+            
+            System.out.println("Game results saved to: " + filename);
+        } catch (IOException e) {
+            System.err.println("Failed to save game results: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Calculate score for a player: gold + health bonus - time penalty
+     */
+    private int calculateScore(Player.HumanPlayer player) {
+        int gold = playerGold.getOrDefault(player, 0);
+        int health = playerHealth.getOrDefault(player, 0);
+        int moves = playerMoves.getOrDefault(player, 0);
+        
+        // Score formula: gold + health - (moves / 10)
+        return gold + health - (moves / 10);
+    }
+    
+    /**
+     * Check if the game has ended (at least one player reached the exit)
+     */
+    public boolean isGameEnded() {
+        return gameEnded;
     }
 }

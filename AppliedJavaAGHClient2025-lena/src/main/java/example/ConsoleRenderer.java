@@ -33,7 +33,7 @@ public class ConsoleRenderer {
                 if (state.itemLocations != null) {
                     for (Response.StateLocations.ItemLocation i : state.itemLocations) {
                         if (i.location().row() == r && i.location().column() == c) {
-                            System.out.print("G"); // gold / health
+                            System.out.print("G"); // gold / health / exit
                             printed = true;
                             break;
                         }

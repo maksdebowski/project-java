@@ -4,7 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7eab0129-d4f9-4d83-a4a9-4ce8c8fea3e2" name="Changes" comment="minor server changes and maks-client changes" />
+    <list default="true" id="7eab0129-d4f9-4d83-a4a9-4ce8c8fea3e2" name="Changes" comment="wiekszosc 3 zrobione (zobacz readme)">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AppliedJavaAGHClient2025-maks/src/main/java/example/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/AppliedJavaAGHClient2025-maks/src/main/java/example/Client.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AppliedJavaAGHClient2025-maks/src/main/java/example/domain/game/Location.java" beforeDir="false" afterPath="$PROJECT_DIR$/AppliedJavaAGHClient2025-maks/src/main/java/example/domain/game/Location.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -13,18 +17,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "maksdebowski"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;maksdebowski&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/maksdebowski/project-java.git",
-    "accountId": "86e6ee82-a6f5-4a0f-a57f-6f516a708c42"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/maksdebowski/project-java.git&quot;,
+    &quot;accountId&quot;: &quot;86e6ee82-a6f5-4a0f-a57f-6f516a708c42&quot;
   }
-}]]></component>
+}</component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
@@ -36,19 +40,19 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "git-widget-placeholder": "main",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/data/project-java/AppliedJavaAGHServer2025",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/data/project-java&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -66,6 +70,8 @@
       <option name="presentableId" value="Default" />
       <updated>1768412228502</updated>
       <workItem from="1769107265745" duration="264000" />
+      <workItem from="1769203419588" duration="139000" />
+      <workItem from="1769286043989" duration="651000" />
     </task>
     <task id="LOCAL-00001" summary="minor server changes and maks-client changes">
       <option name="closed" value="true" />
@@ -75,7 +81,23 @@
       <option name="project" value="LOCAL" />
       <updated>1769107390579</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="wiekszosc 3 zrobione (zobacz readme)">
+      <option name="closed" value="true" />
+      <created>1769203466693</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1769203466693</updated>
+    </task>
+    <task id="LOCAL-00003" summary="wiekszosc 3 zrobione (zobacz readme)">
+      <option name="closed" value="true" />
+      <created>1769203535086</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1769203535086</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -83,6 +105,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="minor server changes and maks-client changes" />
-    <option name="LAST_COMMIT_MESSAGE" value="minor server changes and maks-client changes" />
+    <MESSAGE value="wiekszosc 3 zrobione (zobacz readme)" />
+    <option name="LAST_COMMIT_MESSAGE" value="wiekszosc 3 zrobione (zobacz readme)" />
   </component>
 </project>

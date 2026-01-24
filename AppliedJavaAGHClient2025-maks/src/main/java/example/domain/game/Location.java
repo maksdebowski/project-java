@@ -6,7 +6,9 @@ public record Location(int row, int column) {
     }
 
     public boolean equals(Location loc) {
-        if(row == loc.row && column == loc.column) { return true; };
-  ;      return false;
+        if (row == loc.row && column == loc.column) {
+            return true;
+        }
+        return false;
     }
 }

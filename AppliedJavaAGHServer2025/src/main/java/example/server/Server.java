@@ -23,6 +23,8 @@ import example.domain.game.Action;
 import example.domain.game.Direction;
 import example.domain.game.Player;
 import example.game.Game;
+import example.npc.DragonAI;
+import example.validation.ConfigValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,12 +38,50 @@ public class Server {
     private final Condition stateUpdated = stateLock.newCondition();
     private final Game game;
     private final Collection<PlayerConfiguration> known;
+    private final DragonAI dragonAI;
 
     public Server(Game game, Path path) throws IOException {
         final var config = objectMapper.readValue(Files.readAllBytes(path), Config.class);
+        
+        // Validate configuration
+        ConfigValidator.ValidationResult validationResult = ConfigValidator.validate(config);
+        if (!validationResult.isValid()) {
+            logger.error("Configuration validation failed: {}", validationResult.getErrorMessage());
+            throw new IllegalArgumentException("Invalid configuration: " + validationResult.getErrorMessage());
+        }
+        logger.info("Configuration validated successfully");
+        
         this.known = config.known();
         this.game = game;
-        known.forEach((configuration) -> game.add(configuration.player(), game::randomLocation));
+        this.dragonAI = new DragonAI();
+        
+        // Generate exit first
+        game.generateExit();
+        logger.info("Exit generated at location: {}", game.getExitLocation());
+        
+        // Add players with fair start positions
+        Map<example.domain.game.Location, Integer> distances = game.calculateDistancesFromExit();
+        if (!distances.isEmpty()) {
+            // Find a good starting distance (e.g., median or specific value)
+            int targetDistance = distances.values().stream()
+                    .sorted()
+                    .skip(distances.size() / 2)
+                    .findFirst()
+                    .orElse(10);
+            
+            logger.info("Placing players at distance {} from exit", targetDistance);
+            known.forEach((configuration) -> {
+                if (configuration.player() instanceof Player.HumanPlayer) {
+                    game.add(configuration.player(), game.fairStartLocationSupplier(targetDistance));
+                } else {
+                    // Dragons can start anywhere
+                    game.add(configuration.player(), game::randomLocation);
+                }
+            });
+        } else {
+            // Fallback to random placement
+            known.forEach((configuration) -> game.add(configuration.player(), game::randomLocation));
+        }
     }
 
     /**
@@ -257,6 +297,11 @@ public class Server {
                 // Process all collected commands
                 final var actions = new LinkedList<Action>();
                 actionsQueue.drainTo(actions);
+                
+                // Add dragon AI actions
+                List<Action> dragonActions = dragonAI.generateDragonActions(game.playerLocation(), game.cave());
+                actions.addAll(dragonActions);
+                logger.debug("Generated {} dragon actions", dragonActions.size());
 
                 game.step(actions);
 
@@ -271,6 +316,14 @@ public class Server {
                     stateUpdated.signalAll();
                 } finally {
                     stateLock.unlock();
+                }
+                
+                // Check if game has ended (player reached exit)
+                if (game.isGameEnded()) {
+                    logger.info("Game ended! A player has reached the exit. Shutting down server in 5 seconds...");
+                    Thread.sleep(5000); // Give clients time to receive final state
+                    logger.info("Stopping server now.");
+                    System.exit(0); // Stop the server
                 }
             }
         } catch (InterruptedException e) {

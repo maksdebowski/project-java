@@ -4,10 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7eab0129-d4f9-4d83-a4a9-4ce8c8fea3e2" name="Changes" comment="wiekszosc 3 zrobione (zobacz readme)">
+    <list default="true" id="7eab0129-d4f9-4d83-a4a9-4ce8c8fea3e2" name="Changes" comment="finished server and imporved my client">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AppliedJavaAGHClient2025-maks/src/main/java/example/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/AppliedJavaAGHClient2025-maks/src/main/java/example/Client.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AppliedJavaAGHClient2025-maks/src/main/java/example/domain/game/Location.java" beforeDir="false" afterPath="$PROJECT_DIR$/AppliedJavaAGHClient2025-maks/src/main/java/example/domain/game/Location.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,19 +38,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/data/project-java&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/data/project-java/AppliedJavaAGHServer2025",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -72,6 +71,8 @@
       <workItem from="1769107265745" duration="264000" />
       <workItem from="1769203419588" duration="139000" />
       <workItem from="1769286043989" duration="651000" />
+      <workItem from="1769289803595" duration="142000" />
+      <workItem from="1769430889464" duration="165000" />
     </task>
     <task id="LOCAL-00001" summary="minor server changes and maks-client changes">
       <option name="closed" value="true" />
@@ -97,7 +98,15 @@
       <option name="project" value="LOCAL" />
       <updated>1769203535086</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="finished server and imporved my client">
+      <option name="closed" value="true" />
+      <created>1769289839927</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1769289839927</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -106,6 +115,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="minor server changes and maks-client changes" />
     <MESSAGE value="wiekszosc 3 zrobione (zobacz readme)" />
-    <option name="LAST_COMMIT_MESSAGE" value="wiekszosc 3 zrobione (zobacz readme)" />
+    <MESSAGE value="finished server and imporved my client" />
+    <option name="LAST_COMMIT_MESSAGE" value="finished server and imporved my client" />
   </component>
 </project>

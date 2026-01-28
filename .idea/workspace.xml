@@ -18,6 +18,7 @@
       <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AppliedJavaAGHClient2025-lukasz/src/main/java/example/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/AppliedJavaAGHClient2025-lukasz/src/main/java/example/Client.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AppliedJavaAGHClient2025-lukasz/src/main/java/example/domain/game/Item.java" beforeDir="false" afterPath="$PROJECT_DIR$/AppliedJavaAGHClient2025-lukasz/src/main/java/example/domain/game/Item.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AppliedJavaAGHServer2025/src/main/java/example/game/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/AppliedJavaAGHServer2025/src/main/java/example/game/Game.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

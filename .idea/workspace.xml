@@ -4,8 +4,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7eab0129-d4f9-4d83-a4a9-4ce8c8fea3e2" name="Changes" comment="finished server and imporved my client">
+    <list default="true" id="7eab0129-d4f9-4d83-a4a9-4ce8c8fea3e2" name="Changes" comment="Zrobiłam poziom2 ale  nie wiem czy tak jest git">
+      <change afterPath="$PROJECT_DIR$/AppliedJavaAGHClient2025-lukasz/src/main/java/example/ClientConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AppliedJavaAGHClient2025-lukasz/src/main/java/example/ConsoleRenderer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AppliedJavaAGHClient2025-lukasz/src/main/java/example/GameState.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AppliedJavaAGHClient2025-lukasz/src/main/java/example/LocalCave.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AppliedJavaAGHClient2025-lukasz/src/main/java/example/MoveStrategy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/java.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AppliedJavaAGHClient2025-lukasz/src/main/java/example/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/AppliedJavaAGHClient2025-lukasz/src/main/java/example/Client.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AppliedJavaAGHServer2025/src/main/java/example/game/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/AppliedJavaAGHServer2025/src/main/java/example/game/Game.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -18,13 +31,13 @@
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {
     &quot;state&quot;: &quot;OPEN&quot;,
-    &quot;assignee&quot;: &quot;maksdebowski&quot;
+    &quot;assignee&quot;: &quot;lstar17&quot;
   }
 }</component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/maksdebowski/project-java.git&quot;,
-    &quot;accountId&quot;: &quot;86e6ee82-a6f5-4a0f-a57f-6f516a708c42&quot;
+    &quot;accountId&quot;: &quot;3039355f-618a-447d-a532-e7853c96c89d&quot;
   }
 }</component>
   <component name="MarkdownSettingsMigration">
@@ -40,23 +53,42 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Application.Main.executor": "Run",
+    "JUnit.GameTest.executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/data/project-java/AppliedJavaAGHServer2025",
-    "vue.rearranger.settings.migration": "true"
+    "last_opened_file_path": "C:/Users/lenas/OneDrive/Dokumenty/project-java/AppliedJavaAGHClient2025-lukasz/src/main/java/example",
+    "settings.editor.selected.configurable": "preferences.general"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\lenas\OneDrive\Dokumenty\project-java\AppliedJavaAGHClient2025-lukasz\src\main\java\example" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="java" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="java" />
+      <option name="filePath" />
+      <method v="2" />
+    </configuration>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-30f59d01ecdd-26cb7f24e5b0-intellij.indexing.shared.core-IU-253.29346.240" />
-        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-IU-253.29346.240" />
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.26199.169" />
       </set>
     </attachedChunks>
   </component>
@@ -68,54 +100,52 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1768412228502</updated>
-      <workItem from="1769107265745" duration="264000" />
-      <workItem from="1769203419588" duration="139000" />
-      <workItem from="1769286043989" duration="651000" />
-      <workItem from="1769289803595" duration="142000" />
-      <workItem from="1769430889464" duration="165000" />
     </task>
-    <task id="LOCAL-00001" summary="minor server changes and maks-client changes">
+    <task id="LOCAL-00001" summary="zrobiłam wszystkie punkty 1-5 z poziomu 1 w kliencie Lena">
       <option name="closed" value="true" />
-      <created>1769107390579</created>
+      <created>1769020411018</created>
       <option name="number" value="00001" />
       <option name="presentableId" value="LOCAL-00001" />
       <option name="project" value="LOCAL" />
-      <updated>1769107390579</updated>
+      <updated>1769020411018</updated>
     </task>
-    <task id="LOCAL-00002" summary="wiekszosc 3 zrobione (zobacz readme)">
+    <task id="LOCAL-00002" summary="zrobiłam wszystkie punkty 1-5 z poziomu 1 w kliencie Lena">
       <option name="closed" value="true" />
-      <created>1769203466693</created>
+      <created>1769108796976</created>
       <option name="number" value="00002" />
       <option name="presentableId" value="LOCAL-00002" />
       <option name="project" value="LOCAL" />
-      <updated>1769203466693</updated>
+      <updated>1769108796976</updated>
     </task>
-    <task id="LOCAL-00003" summary="wiekszosc 3 zrobione (zobacz readme)">
+    <task id="LOCAL-00003" summary="Zrobiłam poziom2 ale  nie wiem czy tak jest git">
       <option name="closed" value="true" />
-      <created>1769203535086</created>
+      <created>1769118941840</created>
       <option name="number" value="00003" />
       <option name="presentableId" value="LOCAL-00003" />
       <option name="project" value="LOCAL" />
-      <updated>1769203535086</updated>
+      <updated>1769118941840</updated>
     </task>
-    <task id="LOCAL-00004" summary="finished server and imporved my client">
-      <option name="closed" value="true" />
-      <created>1769289839927</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1769289839927</updated>
-    </task>
-    <option name="localTasksCounter" value="5" />
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
-  <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="3" />
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="minor server changes and maks-client changes" />
-    <MESSAGE value="wiekszosc 3 zrobione (zobacz readme)" />
-    <MESSAGE value="finished server and imporved my client" />
-    <option name="LAST_COMMIT_MESSAGE" value="finished server and imporved my client" />
+    <MESSAGE value="zrobiłam wszystkie punkty 1-5 z poziomu 1 w kliencie Lena" />
+    <MESSAGE value="Zrobiłam poziom2 ale  nie wiem czy tak jest git" />
+    <option name="LAST_COMMIT_MESSAGE" value="Zrobiłam poziom2 ale  nie wiem czy tak jest git" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>

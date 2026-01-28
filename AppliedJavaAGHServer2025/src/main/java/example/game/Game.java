@@ -252,7 +252,7 @@ public class Game {
         // update locations
         moved.forEach((location, entries) -> entries.forEach(entry -> playerLocation.put(entry.getKey(), entry.getValue())));
 
-        // generate gold if none
+
         long goldCount = itemLocation.keySet().stream()
                 .filter(item -> item instanceof Item.Gold)
                 .count();
